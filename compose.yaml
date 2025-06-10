@@ -8,20 +8,21 @@ services:
     ports:
       - "9003:80"
     volumes:
-      - ./var/www/html/data-importer
+      - .:/var/www/html/data-importer
     networks:
       - data-importer-network
-    
+
   db:
-    image: mysql:latest
+    image: mysql
     container_name: data_importer_db
+    restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: data_importer
-      # MYSQL_USER: user
-      MYSQL_PASSWORD: root
+      # MYSQL_USER: root
+      MYSQL_PASSWORD: secret
     ports:
-      - "3306:3306"
+      - "3309:3306"
     volumes:
       - db_data:/var/lib/mysql
       - ./docker/mysql/my.cnf:/etc/mysql/conf.d/my.cnf
@@ -34,10 +35,3 @@ networks:
 
 volumes:
   db_data:
-    driver: local
-  data_importer:
-    driver: local
-    driver_opts:
-      type: none
-      device: ./var/www/html/data-importer
-      o: bind
